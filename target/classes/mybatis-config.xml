@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+<!--    输出一下日志（官方的），可以在控制台显示sql的执行过程更加清晰，看个人需求加不加-->
+<!--    <settings>-->
+<!--        <setting name="logImpl" value="STDOUT_LOGGING"/>-->
+<!--    </settings>-->
+<!--    这个表下面的所有类起别名，默认类名首位小写-->
+    <typeAliases>
+       <package name="com.ssm.pojo"/>
+    </typeAliases>
+    <!--    绑定你的dao层Mapper接口-->
+    <mappers>
+        <mapper class="com.ssm.dao.BookMapper"/>
+    </mappers>
+</configuration>

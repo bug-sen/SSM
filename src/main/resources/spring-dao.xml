@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util https://www.springframework.org/schema/util/spring-util.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+<!--使用spring对数据库进行整合-->
+<!--    1：关联数据库配置文件,之前是通过mybatis读的，现在通过spring-->
+    <context:property-placeholder location="classpath:database.properties"/>
+<!--    2：链接池
+    dbcp:半自动化连接，不会自动连   接
+    c3p0:自动化操作（自动的加载配置文件，并且自动设置到对象中） 这里面必须是jdbc.按官方的来
+    druid和hikari
+-->
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <property name="driverClass" value="${jdbc.driver}"/>
+        <property name="jdbcUrl" value="${jdbc.url}"/>
+        <property name="user" value="${jdbc.user}"/>
+        <property name="password" value="${jdbc.password}"/>
+<!--        c3p0还有很多其他配置，这里就不写了，百度就有很多-->
+    </bean>
+<!--    3：配置sqlsessionfactory-->
+    <bean id="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+<!--        将上面的detasource引入-->
+        <property name="dataSource" ref="dataSource"/>
+<!--        绑定mybatis配置文件-->
+        <property name="configLocation" value="classpath:mybatis-config.xml"/>
+    </bean>
+
+<!--   新的方式： 配置dao接口扫描包，动态的实现dao接口可以注入到Spring容器中，
+之前时还要写一个BookMapper接口的实现类并且使用sqlSessiontemplate-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+<!--        注入sqlSessionFactory-->
+        <property name="sqlSessionFactoryBeanName" value="sessionFactory"/>
+<!--        配置要扫描的包-->
+        <property name="basePackage" value="com.ssm.dao"/>
+    </bean>
+</beans>
